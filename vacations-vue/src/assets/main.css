@@ -2,7 +2,6 @@
     margin: 0;
 }
 
-text {
+text, p {
     font-family: 'Roboto Condensed', sans-serif;
-    font-weight: bold;
 }

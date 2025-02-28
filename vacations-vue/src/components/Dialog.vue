@@ -1,4 +1,6 @@
 <script setup>
+import { onMounted, onUpdated } from 'vue';
+
 
 const props = defineProps({
     isOpen: Boolean,
@@ -12,6 +14,17 @@ const emits = defineEmits(['close']);
 
 
 const closeDialog = () => { emits('close'); }
+
+
+
+
+onUpdated(() => {
+    if (props.isOpen) {
+        setTimeout(() => {
+            closeDialog();
+        }, 3000);
+    }
+});
 
 </script>
 
@@ -28,7 +41,15 @@ const closeDialog = () => { emits('close'); }
 
                 <div class="dialog-content">
 
-                    <p>{{ text }}</p>
+                    <div class="img-box">
+                        <img v-if="status == 'success'" class="img" src="../assets/correct.png" />
+                        <img v-else-if="status == 'error'" class="img" src="../assets/wrong.png" />
+                        <img v-else class="img" src="../assets/attention.png" />
+                    </div>
+
+                    <div class="text-box">
+                        <p class="message">{{ text }}</p>
+                    </div>
 
                 </div>
 
@@ -76,9 +97,50 @@ const closeDialog = () => { emits('close'); }
 }
 
 .dialog-content {
-    width: 200px;
-    height: 20px;
-    background-color: aqua;
+    position: fixed;
+
+    bottom: 10vh;
+
+    width: 225px;
+    height: 60px;
+
+    display: flex;
+    flex-direction: row;
+
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+
+    border-radius: 5px;
+}
+
+
+
+
+.img-box {
+    height: 100%;
+}
+
+.img {
+    height: 100%;
+}
+
+
+
+
+.text-box {
+    width: 100%;
+    height: 100%;
+
+    padding-left: 10px;
+
+    display: flex;
+    align-items: center;
+}
+
+.message {
+    font-weight: 500;
+    font-size: large;
 }
 
 </style>
