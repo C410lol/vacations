@@ -140,7 +140,7 @@ onUpdated(() => {
 
 .message {
     font-weight: 500;
-    font-size: large;
+    font-size: medium;
 }
 
 </style>

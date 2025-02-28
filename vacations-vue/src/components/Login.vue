@@ -4,15 +4,20 @@ import Dialog from "./Dialog.vue";
 import { ref } from "vue";
 import { loginUser } from "../services/apiCalls"
 import { HttpStatusCode } from "axios";
+import { useRouter } from "vue-router";
 
 
 
+
+const router = useRouter();
 
 const name = ref('');
 const email = ref('');
 const isLoading = ref(false);
 
+const dialogStatus = ref(null);
 const isDialog = ref(false);
+const dialogTxt = ref(null);
 
 
 
@@ -29,11 +34,12 @@ async function tryToLoginUser() {
         name: body.name,
         email: body.email
       }));
+
+      router.push('/vacations');
     }
   } catch(e) {
-    isDialog.value = true;
+    openDialog('error', e.response.data.error);
   } finally {
-    isDialog.value = true;
     isLoading.value = !isLoading.value;
   }
 }
@@ -41,6 +47,11 @@ async function tryToLoginUser() {
 
 
 
+const openDialog = (status, text) => { 
+  isDialog.value = true; 
+  dialogStatus.value = status;
+  dialogTxt.value = text;
+}
 const closeDialog = () => { isDialog.value = false; }
 
 </script>
@@ -70,7 +81,8 @@ const closeDialog = () => { isDialog.value = false; }
 
   <Dialog 
   :is-open="isDialog"
-  :text="'Hello, World!'"
+  :text="dialogTxt"
+  :status="dialogStatus"
   @close="closeDialog()"
   />
 
