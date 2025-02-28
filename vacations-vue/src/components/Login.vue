@@ -94,10 +94,8 @@ const closeDialog = () => { isDialog.value = false; }
 <style scoped>
 
 .content {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-
-  margin: 0;
 
   display: flex;
   flex-direction: column;

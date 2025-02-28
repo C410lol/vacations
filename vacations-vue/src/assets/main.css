@@ -5,3 +5,10 @@
 text, p {
     font-family: 'Roboto Condensed', sans-serif;
 }
+
+.division-line {
+    width: 95%;
+    max-width: 750px;
+
+    border: 1px solid lightgray;
+}
