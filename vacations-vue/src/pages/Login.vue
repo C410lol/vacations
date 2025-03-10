@@ -1,6 +1,7 @@
 <script setup>
 
-import Dialog from "./Dialog.vue";
+import Loading from "../components/Loading.vue";
+import Dialog from "../components/Dialog.vue";
 import { ref } from "vue";
 import { loginUser } from "../services/apiCalls"
 import { HttpStatusCode } from "axios";
@@ -30,7 +31,7 @@ async function tryToLoginUser() {
     if (req.status == HttpStatusCode.Ok || req.status == HttpStatusCode.Created) {
       const body = req.data;
       localStorage.setItem('user', JSON.stringify({
-        id: body._id,
+        _id: body._id,
         name: body.name,
         email: body.email
       }));
@@ -71,7 +72,7 @@ const closeDialog = () => { isDialog.value = false; }
     </form>
   
     <div class="btn-box">
-      <div v-if="isLoading" class="spinner"/>
+      <Loading v-if="isLoading" />
       <button @click="tryToLoginUser()" v-else class="btn">Login</button>
     </div>
 
@@ -94,8 +95,8 @@ const closeDialog = () => { isDialog.value = false; }
 <style scoped>
 
 .content {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -163,37 +164,6 @@ const closeDialog = () => { isDialog.value = false; }
   height: 35px;
   width: 95%;
   max-width: 350px;
-
-  background-color: rgba(238, 50, 16, 0.925);
-
-  border: 0;
-  border-radius: 2.5px;
-
-  font-size: .75em;
-  font-weight: 600;
-  color: white;
-}
-
-.btn:hover {
-  cursor: pointer;
-  background-color: rgba(209, 44, 14, 0.925);
-}
-
-
-
-
-.spinner {
-    width: 25px;
-    height: 25px;
-    border: 5px solid #f3f3f3; /* Light gray */
-    border-top: 5px solid #3498db; /* Blue */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 </style>

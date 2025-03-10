@@ -8,18 +8,19 @@ const props = defineProps({
     text: String
 });
 
-const emits = defineEmits(['close']);
+const emits = defineEmits(['close', 'confirm']);
 
 
 
 
 const closeDialog = () => { emits('close'); }
+const confirmDialog = () => { emits('confirm'); }
 
 
 
 
 onUpdated(() => {
-    if (props.isOpen) {
+    if (props.isOpen && props.status != 'action') {
         setTimeout(() => {
             closeDialog();
         }, 3000);
@@ -49,6 +50,11 @@ onUpdated(() => {
 
                     <div class="text-box">
                         <p class="message">{{ text }}</p>
+
+                        <div v-if="status == 'action'" class="btn-box">
+                            <img @click="closeDialog()" class="img-btn" src="../assets/close.png"/>
+                            <img @click="confirmDialog" class="img-btn" src="../assets/check.png"/>
+                        </div>
                     </div>
 
                 </div>
@@ -66,43 +72,23 @@ onUpdated(() => {
 
 <style scoped>
 
-.fade-enter-active, .fade-leave-active {
-  transform: scale(1);
-  transition: all 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  transform: scale(1.1);
-  opacity: 0;
-}
-
-.fade-leave-to {
-    transform: scale(1);
-}
-
-
-
-
 .dialog-mask {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-
-    width: 100%;
-    height: 100%;
-
-    display: flex;
     align-items: end;
-    justify-content: center;
+    justify-content: center;    
+
+    z-index: 1000;
 }
+
+
+
 
 .dialog-content {
     position: fixed;
 
     bottom: 10vh;
 
-    width: 225px;
-    height: 60px;
+    width: 300px;
+    height: 75px;
 
     display: flex;
     flex-direction: row;
@@ -110,6 +96,8 @@ onUpdated(() => {
     -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
     box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+
+    background-color: white;
 
     border-radius: 5px;
 }
@@ -132,15 +120,45 @@ onUpdated(() => {
     width: 100%;
     height: 100%;
 
-    padding-left: 10px;
+    padding: 10px;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .message {
+    max-width: 100%;
+
     font-weight: 500;
     font-size: medium;
+}
+
+
+
+
+.btn-box {
+    width: 100%;
+    height: 25px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 10px;
+}
+
+.img-btn {
+    height: 100%;
+
+    padding: 5px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.img-btn:hover {
+    background-color: rgba(0, 0, 0, 0.150);
 }
 
 </style>

@@ -15,43 +15,95 @@ var userModel = require('../models/userModel');
 /* GET vacations list */
 router.get('/', async (req, res, next) => {
     try {
-        const vacations = await vacationModel.aggregate([{
-            $lookup: {
-                from: 'vacationperiods',
-                localField: '_id',
-                foreignField: 'vacation',
-                as: 'vacationPeriods'
-            }
-        }]).exec();
-        res.send(vacations);
+        var dbOptions = [
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'vacationperiods',
+                    localField: '_id',
+                    foreignField: 'vacation',
+                    as: 'vacationPeriods'
+                }
+            },
+            { $unwind: '$user' }
+        ];
+
+        const excludeId = req.query.excludeId;
+        if (excludeId) {
+            dbOptions.unshift({
+                $match: { 
+                    user: { $ne: new mongoose.Types.ObjectId(excludeId) }
+                }
+            });
+        }
+
+        const vacations = await vacationModel.aggregate(dbOptions).exec();
+
+        res.send({ vacations: vacations, hasVacations: vacations.length > 0 });
     } catch (e) {
         next(e);
     }
 });
 
-/* GET find vacation by user id */
-router.get('/by-user-id', async (req, res, next) => {
-    try {
-        const userId = req.query.userId;
-        if (userId == null) return res.status(400).send({ error: "Query param 'userId' é requisitado" });
-    
-        const mongooseId = new mongoose.Types.ObjectId(userId);
-        const vacations = await vacationModel.aggregate([
-            {
-                $match: { user: mongooseId }
-            },
-            { $lookup: {
-                from: 'vacationperiods',
-                localField: '_id',
-                foreignField: 'vacation',
-                as: 'vacationPeriods'
-            }},
-    ]).exec();
-        res.send(vacations);
-    } catch (e) {
+
+/* GET list all forbidden date ranges */
+router.get('/forbidden', async (req, res, next) => {
+    try  {
+        const vPeriods = await vacationPeriodModel.find().exec();
+        var vPeriods1 = Array.from(vPeriods);
+
+        var forbiddenDates = [];
+
+        for (var x = 0; x < vPeriods.length; x++) {
+            for (var y = 1; y < vPeriods1.length; y++) {
+                const sDate0 = vPeriods[x].startDate;
+                const eDate0 = vPeriods[x].endDate;
+                const sDate1 = vPeriods1[y].startDate;
+                const eDate1 = vPeriods1[y].endDate;
+
+                if (sDate0 >= sDate1 && sDate0 <= eDate1) {
+                    forbiddenDates = forbiddenDates.concat(getDatesInRange([sDate0, eDate1]));
+                } else if (eDate0 >= sDate1 && eDate0 <= eDate1) {
+                    forbiddenDates = forbiddenDates.concat(getDatesInRange([sDate1, eDate0]));
+                }
+            }
+
+            vPeriods1.splice(0, 1);
+        }
+
+        res.send(forbiddenDates);
+    } catch(e) {
         next(e);
     }
 });
+
+const getDatesInRange = (range) => {
+    var dates = [];
+
+    var currentDate = new Date(new Date(range[0]));
+    var endDate = new Date(new Date(range[1]));
+
+    currentDate.setDate(currentDate.getDate());
+    endDate.setDate(endDate.getDate());
+
+    while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+}
+
+
+
+
 
 
 
@@ -90,8 +142,8 @@ router.post('/', async (req, res, next) => {
             var counter = 0;
             for (const vPeriodDB of vPeriodsDB) {
                 if (
-                    (vPeriodDB.startDate <= startDate && vPeriodDB.endDate >= endDate) ||
-                    (vPeriodDB.startDate <= startDate && vPeriodDB.endDate >= endDate)
+                    (startDate >= vPeriodDB.startDate && startDate <= vPeriodDB.endDate) ||
+                    (endDate >= vPeriodDB.startDate && endDate <= vPeriodDB.endDate)
                 ) counter++;
                 if (counter == 2) {
                     return res.status(409).send({ error: 'O período selecionado já possui 2 reservas' });
