@@ -7,6 +7,17 @@ text, p {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+.content {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+
 .division-line {
     width: 100%;
 
@@ -14,20 +25,20 @@ text, p {
 }
 
 .btn {
-    background-color: rgba(238, 50, 16, 0.925);
+  background-color: rgba(238, 50, 16, 0.925);
+
+  border: 0;
+  border-radius: 5px;
+
+  font-size: .75em;
+  font-weight: 600;
+  color: white;
+}
   
-    border: 0;
-    border-radius: 5px;
-  
-    font-size: .75em;
-    font-weight: 600;
-    color: white;
-  }
-  
-  .btn:hover {
-    cursor: pointer;
-    background-color: rgba(209, 44, 14, 0.925);
-  }
+.btn:hover {
+  cursor: pointer;
+  background-color: rgba(209, 44, 14, 0.925);
+}
 
 
 

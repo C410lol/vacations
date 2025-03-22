@@ -4,13 +4,36 @@ const tokenModel = require('../models/tokenModel');
 
 
 
-export const createToken = (userId) => {
+// FIND
+module.exports.findTokenByUserId = async (userId) => {
+    return tokenModel.findOne({ user: userId }).exec();
+}
+
+
+
+
+
+
+
+
+// CREATE
+module.exports.createToken = async (userId) => {
     const token = crypto.randomBytes(32).toString('hex');
-    const expirationDate = new Date(new Date().getDate() + 10);
 
     return tokenModel.create({ 
-        token: token, 
-        expirationDate: expirationDate, 
+        token: token,
         user: userId 
     });
+}
+
+
+
+
+
+
+
+
+// DELETE 
+module.exports.findAndDeleteToken = async (token) => {
+    return tokenModel.findOneAndDelete({ token: token }).populate('user').exec();
 }

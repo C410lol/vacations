@@ -2,12 +2,16 @@
 import Loading from '@/components/Loading.vue';
 import Vacation from '@/components/Vacation.vue';
 import { getAllVacations, getUserVacations } from '@/services/apiCalls';
-import { all, HttpStatusCode } from 'axios';
+import { HttpStatusCode } from 'axios';
 import { onMounted, reactive, ref } from 'vue';
 import VacationDialog from '../components/VacationDialog.vue';
+import { useRouter } from 'vue-router';
 
 
 
+
+//ROUTER
+const router = useRouter();
 
 var user = reactive({
     _id: '',
@@ -28,7 +32,9 @@ const isLoading = ref(true);
 
 
 // DIALOG VARIABLES //
-const isDialogOpen = ref(false);
+const dialogOpen = ref(false);
+const dialogStatus = ref();
+const dialogText = ref();
 
 
 
@@ -63,7 +69,7 @@ const loadUserVacation = async () => {
             loadAllVacations();
          }
     } catch(e) {
-
+        openDialog('error', e.response.data.error);
     } finally {
         isLoading.value = false;
     }
@@ -79,7 +85,7 @@ const loadAllVacations = async () => {
             if (hasVacation.value) allVacations.value.unshift(userVacation);
         }
     } catch(e) {
-
+        openDialog('error', e.response.data.error);
     } finally {
         isLoading.value = false;
     }
@@ -92,9 +98,20 @@ const loadAllVacations = async () => {
 
 
 
+const logout = () => {
+    localStorage.removeItem('user');
+    router.push('/');
+}
+
 const refreshElements = () => {
     loadUserVacation();
-    isDialogOpen.value = false;
+    dialogOpen.value = false;
+}
+
+const openDialog = (status, text) => {
+    dialogOpen.value = true;
+    dialogStatus.value = status;
+    dialogText.value = text;
 }
 
 
@@ -122,13 +139,16 @@ onMounted(() => {
     <main class="content">
 
         <div class="user-info">
-            <p class="user-txt">Olá, {{ user.name }}</p>
+            <div class="user-status">
+                <p class="user-txt">Olá, {{ user.name }}</p>
+                <p @click="logout()" class="logout-txt">Sair</p>
+            </div>
 
             <div v-if="hasVacation" class="vacation-status choosed">
                 <p class="vacation-txt">Férias escolhidas</p>
             </div>
 
-            <button v-else @click="isDialogOpen = true" class="btn">Escolher férias</button>
+            <button v-else @click="dialogOpen = true" class="btn">Escolher férias</button>
         </div>
 
 
@@ -159,9 +179,9 @@ onMounted(() => {
 
 
     <VacationDialog
-    :is-open="isDialogOpen"
+    :is-open="dialogOpen"
     :user-id="user._id"
-    @close="isDialogOpen = false"
+    @close="dialogOpen = false"
     @confirm="refreshElements"
     />
 
@@ -207,6 +227,15 @@ onMounted(() => {
 .user-txt {
     font-size: x-large;
     font-weight: 600;
+}
+
+.logout-txt {
+    color: red;
+    cursor: pointer;
+}
+
+.logout-txt:hover {
+    color: rgb(175, 0, 0);
 }
 
 

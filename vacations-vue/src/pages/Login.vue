@@ -5,15 +5,14 @@ import Dialog from "../components/Dialog.vue";
 import { ref } from "vue";
 import { loginUser } from "../services/apiCalls"
 import { HttpStatusCode } from "axios";
-import { useRouter } from "vue-router";
 
 
 
-
-const router = useRouter();
 
 const name = ref('');
 const email = ref('');
+
+const isLogin = ref(false);
 const isLoading = ref(false);
 
 const dialogStatus = ref(null);
@@ -25,24 +24,34 @@ const dialogTxt = ref(null);
 
 async function tryToLoginUser() { 
   isLoading.value = !isLoading.value;
-
   try {
     const req = await loginUser({ name: name.value, email: email.value });
     if (req.status == HttpStatusCode.Ok || req.status == HttpStatusCode.Created) {
-      const body = req.data;
-      localStorage.setItem('user', JSON.stringify({
-        _id: body._id,
-        name: body.name,
-        email: body.email
-      }));
-
-      router.push('/vacations');
+      
+      openDialog('success', req.data);
     }
   } catch(e) {
     openDialog('error', e.response.data.error);
   } finally {
     isLoading.value = !isLoading.value;
   }
+}
+
+
+
+
+const loginBtnClick = () => {
+  if (!isLogin.value && (!name.value || name.value.length < 1)) {
+    openDialog('error', "Preencha o campo 'Nome'!");
+    return;
+  }
+
+  if (!email.value || email.value.length < 1) {
+    openDialog('error', "Preencha o campo 'Email'!");
+    return;
+  }
+
+  tryToLoginUser();
 }
 
 
@@ -64,16 +73,21 @@ const closeDialog = () => { isDialog.value = false; }
   
   <main class="content">
 
-    <p class="title">Login</p>
+    <p class="title">{{ isLogin ? 'Login' : 'Criar' }}</p>
 
     <form class="form">
-      <input v-model="name" class="input" placeholder="Nome"/>
+      <input v-if="!isLogin" v-model="name" class="input" placeholder="Nome"/>
       <input v-model="email" class="input" placeholder="Email"/>
     </form>
+
+    <div class="is-login-box">
+        <input v-model="isLogin" type="checkbox"/>
+        <p>Já possuo uma conta</p>
+    </div>
   
     <div class="btn-box">
       <Loading v-if="isLoading" />
-      <button @click="tryToLoginUser()" v-else class="btn">Login</button>
+      <button @click="loginBtnClick()" v-else class="btn">{{ isLogin ? 'Login' : 'Criar' }}</button>
     </div>
 
   </main>
@@ -147,6 +161,12 @@ const closeDialog = () => { isDialog.value = false; }
 
 .input:focus {
   outline: none;
+}
+
+.is-login-box {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 

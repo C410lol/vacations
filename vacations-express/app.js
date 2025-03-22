@@ -10,6 +10,7 @@ const mongoURL = 'mongodb://localhost:27017/vacations_express_db';
 mongoose.connect(mongoURL);
 
 var indexRouter = require('./routes/index');
+var globalSettingsRouter = require('./routes/globalSettings');
 var usersRouter = require('./routes/users');
 var vacationsRouter = require('./routes/vacations');
 
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
+app.use('/global-settings', globalSettingsRouter);
 app.use('/users', usersRouter);
 app.use('/vacations', vacationsRouter);
 

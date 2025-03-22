@@ -11,7 +11,7 @@ const transport = nodemailer.createTransport({
 
 
 
-export const sendAuthLinkEmail = (emailTo, token) => {
+module.exports.sendAuthLinkEmail = (emailTo, token) => {
     const mailOptions = {
         from: 'gcaio7463@gmail.com',
         to: emailTo,
