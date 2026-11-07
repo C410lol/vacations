@@ -1,29 +1,29 @@
 # Vacation Planner
 
-Sistema web para **organização e escolha de períodos de férias**. A aplicação permite que usuários consultem os períodos já selecionados e registrem suas próprias preferências, enquanto uma área administrativa oferece controles sobre a etapa de escolha e a ordem dos usuários.
+A web system for **organizing and selecting vacation periods**. The application allows users to view periods that have already been selected and register their own preferences, while an administrative area provides controls over the selection period and the order of users.
 
-O repositório reúne as duas partes da aplicação: um frontend em Vue.js e uma API em Node.js/Express, com persistência em MongoDB.
+This repository contains both parts of the application: a Vue.js frontend and a Node.js/Express API, with data persistence in MongoDB.
 
-## ✨ Funcionalidades
+## ✨ Features
 
-### Para usuários
+### For users
 
-- Acesso à aplicação por meio do fluxo de autenticação integrado ao backend.
-- Consulta da própria escolha de férias.
-- Seleção de um período de férias quando a etapa de escolha está habilitada.
-- Visualização das escolhas registradas por outros usuários.
-- Consulta de períodos e datas indisponíveis calculados a partir das escolhas existentes.
+- Access to the application through the authentication flow integrated with the backend.
+- View their own vacation selection.
+- Select a vacation period when the selection phase is enabled.
+- View vacation selections registered by other users.
+- Check unavailable periods and dates calculated from existing selections.
 
-### Para administradores
+### For administrators
 
-- Consulta dos usuários organizados por posição.
-- Reordenação da sequência de usuários.
-- Ativação ou desativação do período de escolha de férias.
-- Acompanhamento das escolhas já registradas.
+- View users organized by their assigned position.
+- Reorder the sequence of users.
+- Enable or disable the vacation selection period.
+- Track selections that have already been registered.
 
-O backend também considera a ordem dos usuários no fluxo de seleção, aplicando regras para controlar quando cada pessoa pode registrar sua escolha.
+The backend also takes users' positions into account during the selection process, applying rules that control when each person can register their choice.
 
-## 🧰 Tecnologias
+## 🧰 Technologies
 
 ### Frontend
 
@@ -44,30 +44,30 @@ O backend também considera a ordem dos usuários no fluxo de seleção, aplican
 - Nodemailer
 - CORS
 
-## 🗂️ Estrutura do repositório
+## 🗂️ Repository structure
 
 ```
 vacations/
-├── vacations-vue/       # Interface web em Vue.js
+├── vacations-vue/       # Vue.js web interface
 │   └── src/
 │       ├── components/
 │       ├── pages/
 │       ├── routes/
 │       └── services/
-└── vacations-express/   # API e regras de negócio
+└── vacations-express/   # API and business logic
     ├── models/
     ├── routes/
     ├── services/
     └── app.js
 ```
 
-## ▶️ Como executar localmente
+## ▶️ How to run locally
 
-### Pré-requisitos
+### Prerequisites
 
-- Node.js e npm.
-- MongoDB em execução local ou acessível por uma URI de conexão.
-- Dois terminais para executar frontend e backend.
+- Node.js and npm.
+- MongoDB running locally or accessible through a connection URI.
+- Two terminals to run the frontend and backend.
 
 ### 1. Backend
 
@@ -77,11 +77,11 @@ npm install
 npm start
 ```
 
-A configuração atual do backend utiliza, por padrão, o banco local `vacations_express_db`, com URI `mongodb://localhost:27017/vacations_express_db`. Verifique a disponibilidade do MongoDB e ajuste a configuração em `app.js` caso utilize outra instância.
+By default, the current backend configuration uses the local `vacations_express_db` database, with the URI `mongodb://localhost:27017/vacations_express_db`. Make sure MongoDB is available and update the configuration in `app.js` if you use another instance.
 
 ### 2. Frontend
 
-Em outro terminal, a partir da raiz do repositório:
+In another terminal, from the repository root:
 
 ```bash
 cd vacations-vue
@@ -89,16 +89,16 @@ npm install
 npm run dev
 ```
 
-O Vite exibirá no terminal o endereço local para acessar a interface.
+Vite will display the local address for accessing the interface in the terminal.
 
-Confira a configuração de comunicação com a API em `vacations-vue/src/services/apiCalls.js` antes de executar o frontend, garantindo que a URL corresponda ao endereço do backend.
+Before running the frontend, check the API communication settings in `vacations-vue/src/services/apiCalls.js` and make sure the URL matches the backend address.
 
-## 📌 Observações
+## 📌 Notes
 
-- O frontend e o backend são projetos separados e precisam estar em execução para que a aplicação completa funcione.
-- O envio de mensagens por e-mail depende de configuração válida do serviço de e-mail utilizado pelo backend.
-- Não compartilhe credenciais de banco de dados ou de e-mail no controle de versão.
+- The frontend and backend are separate projects and both must be running for the complete application to work.
+- Sending email messages depends on a valid configuration for the email service used by the backend.
+- Do not commit database or email credentials to version control.
 
 ---
 
-Projeto de desenvolvimento web com foco na organização de preferências de férias, integração entre frontend e backend e persistência de dados.
+A web development project focused on organizing vacation preferences, integrating frontend and backend components, and persisting data.
